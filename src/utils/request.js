@@ -2,7 +2,7 @@
  * @Author: please
  * @Date: 2023-10-12 14:41:35
  * @LastEditors: please
- * @LastEditTime: 2023-11-17 14:13:57
+ * @LastEditTime: 2023-11-17 17:44:39
  * @Description: 请填写简介
  */
 import axios from 'axios'
@@ -12,7 +12,7 @@ const MODE = import.meta.env.MODE
 
 class Request {
   baseConfig = {
-   baseURL: 'http://localhost:8111',
+   baseURL: 'http://localhost:8111/api',
     timeout: 200000
   }
   constructor(config={}) {
