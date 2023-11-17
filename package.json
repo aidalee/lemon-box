@@ -1,13 +1,15 @@
 {
   "name": "lemon-box",
   "private": false,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "aidalees",
   "license": "ISC",
   "scripts": {
     "dev": "vite --port 8088",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ui": "vue-cli-service serve --port=8112 --open",
+    "server": "supervisor -w server -e 'node,js' ./server/app.js"
   },
   "bin": {
     "lemon": "./bin/index.js"
@@ -33,6 +35,7 @@
     "nodemon": "^3.0.1",
     "os": "^0.1.2",
     "path": "^0.12.7",
+    "supervisor": "^0.12.0",
     "uuid": "^9.0.1",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
