@@ -55,9 +55,6 @@ function request(url, data = {}, params = {}) {
           try {
             wx.removeStorageSync('token')
             wx.removeStorageSync('userInfo')
-            wx.removeStorageSync('data')
-            wx.removeStorageSync('popup')
-            wx.removeStorageSync('invitee-vehicleNumber')
           } catch (e) {
             console.log(e, "wx.removeStorageSync");
           }
