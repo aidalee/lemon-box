@@ -2,7 +2,7 @@
  * @Author: please
  * @Date: 2023-10-12 14:05:42
  * @LastEditors: please
- * @LastEditTime: 2023-10-19 14:23:15
+ * @LastEditTime: 2023-12-19 17:12:24
  * @Description: 请填写简介
 -->
 <template>
@@ -75,14 +75,53 @@
       </span>
     </template>
   </el-dialog>
+
+  <el-upload
+    class="upload-demo"
+    :action="uploadFileUrl"
+    :show-file-list="false"
+    multiple
+    :headers="headers"
+    :on-preview="handlePreview"
+    :on-remove="handleRemove"
+    :before-remove="beforeRemove"
+    :limit="10"
+    :on-exceed="handleExceed"
+    :on-success="handleUploadSuccess"
+  >
+    <el-button type="primary">点击上传图片到OSS(一次性最多上传10个)</el-button>
+    <template #tip>
+      <div class="el-upload__tip">
+        jpg/png files with a size less than 500KB.
+      </div>
+    </template>
+  </el-upload>
+  <div class="uploaded-img-list">
+    <div class="img-list-item" v-for="(item, index) in imgFileList" :key="index">
+      <div class="img-list-item-wrapper">
+        <div class="img-list-item-left">
+          <el-image style="width: 100px; height: 100px" :src="item.url" fit="contain" />
+          <p>{{item.url}}</p>
+        </div>
+        <el-icon @click="()=>copy(item.url)"><CopyDocument /></el-icon>
+      </div>
+      <el-divider />
+    </div>
+  </div>
 </template>
 <script setup>
 import { reactive, ref, watch, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import useClipboard from 'vue-clipboard3'
+
+import { useRoute } from 'vue-router'
+
 import { httpCreateProject, httpGetFinderFiles } from './api'
 import reactSrc from './assets/react-admin.png'
 import vueSrc from './assets/vue-admin.png'
 import wechatSrc from './assets/wechat.png'
+const { toClipboard } = useClipboard()
+
 const formInline = reactive({
   framework: '',
   localPath: '',
@@ -137,8 +176,7 @@ const into = ({name, type}) => {
     currentPath.value += `/${name}`;
   }
 }
-const getFloder = (filePath) => {
-  console.log(filePath,'ooo')
+const getFolder = (filePath) => {
   httpGetFinderFiles({filePath}).then(res=>{
     if (res.code && res.code === 'ENOENT') {
       fileList.value = [];
@@ -151,8 +189,75 @@ const onConfirm = () => {
   dialogVisible.value = false
   formInline.localPath = currentPath.value
 }
+const MODE = import.meta.env.MODE
+let preUrl
+if(MODE == 'development' || MODE == 'test') {
+  preUrl = '/api'
+}else {
+  preUrl = ''
+}
+//  https://an-dev.soterea.cn/api/common/upload
+const uploadFileUrl = ref(preUrl+`/common/upload`)
+
+let route = useRoute()
+let search = window.location.search
+
+search = search.substring(1, search.length)
+
+var token = search.split("=")[1]
+
+if(token) {
+  localStorage.setItem('token', token)
+}
+
+const headers = ref({ token: localStorage.getItem('token') });
+
+const imgFileList = ref([])
+
+const copy = async (value) => {
+  try {
+    await toClipboard(value)
+    ElMessage.success('复制成功')
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+const handleUploadSuccess = (res,  uploadFile, uploadFiles) => {
+  let item = {}
+  if(res.ok && res.result !=null ) {
+    item.name = res.result.name
+    item.url = res.result.url
+    imgFileList.value.push(item)
+  }
+}
+const handleRemove = (file, uploadFiles) => {
+  console.log(file, uploadFiles)
+}
+
+const handlePreview = (uploadFile) => {
+  console.log(uploadFile)
+}
+
+const handleExceed = (files, uploadFiles) => {
+  ElMessage.warning(
+    `The limit is 3, you selected ${files.length} files this time, add up to ${
+      files.length + uploadFiles.length
+    } totally`
+  )
+}
+
+const beforeRemove = (uploadFile, uploadFiles) => {
+  return ElMessageBox.confirm(
+    `Cancel the transfer of ${uploadFile.name} ?`
+  ).then(
+    () => true,
+    () => false
+  )
+}
+
 watch(currentPath, (val)=>{
-  getFloder(val)
+  getFolder(val)
 }, {immediate: true})
 
 </script>
@@ -179,5 +284,19 @@ watch(currentPath, (val)=>{
 }
 .list-item a {
   padding-left: 4px;
+}
+.img-list-item .img-list-item-wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.img-list-item-left {
+  display: flex;
+  align-items: center;
+}
+.img-list-item-left p {
+  padding-left: 12px;
 }
 </style>
