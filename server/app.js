@@ -2,7 +2,7 @@
  * @Author: please
  * @Date: 2023-08-25 13:55:05
  * @LastEditors: please
- * @LastEditTime: 2023-11-17 14:03:38
+ * @LastEditTime: 2023-12-26 17:40:16
  * @Description: 请填写简介
  */
 const express = require('express')
@@ -37,7 +37,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api', router);
 app.use(function(err, req, res, next) {
-    console.error(err);
     res.status(500).send(err.message);
 });
 

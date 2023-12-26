@@ -2,7 +2,7 @@
  * @Author: please
  * @Date: 2023-08-25 14:36:16
  * @LastEditors: please
- * @LastEditTime: 2023-11-17 14:06:45
+ * @LastEditTime: 2023-12-26 17:40:42
  * @Description: 工具函数封装
  */
 
@@ -240,20 +240,16 @@ function createRuoyiProject(res,localPath, name) {
     cwd: localPath
   });
   ls.stdout.on('data', async (data) => {
-      console.log(`stdout: ${data}`); 
+      // console.log(`stdout: ${data}`); 
   });
   ls.stderr.on('data', (data) => {
-      console.log(`stderr: ${data}`);
+      // console.log(`stderr: ${data}`);
   });
 
   ls.on('exit', async (code) => {
-    // let filePath = path.join(localPath, `/${name}/vite.config.js`)
-    // const viteConfigfileContent = viteConfigTpl
-    // fs.outputFile(filePath, viteConfigfileContent, err => {
-    //   if (err) throw err
-    // })
+
     const srcPath = path.join(__dirname ,`materials/ruoyi-vue3/src`);
-    console.log(srcPath, 'srcPathsrcPathsrcPathsrcPath')
+    
     const vitePath = path.join(__dirname,`materials/ruoyi-vue3/vite`);
     const pkgPath = path.join(__dirname,`materials/ruoyi-vue3/package.json`);
     const viteConfigPath = path.join(__dirname,`materials/ruoyi-vue3/vite.config.js`);
@@ -262,50 +258,7 @@ function createRuoyiProject(res,localPath, name) {
     await fs.copy(pkgPath, path.join(localPath, `/${name}/package.json`));
     await fs.copy(viteConfigPath, path.join(localPath, `/${name}/vite.config.js`));
     await fs.copy(vitePath, path.join(localPath, `/${name}/vite`));
-    // let pagesPath = path.join(localPath,`/${name}/src/pages`)
-    // let storesPath = path.join(localPath, `/${name}/src/stores`)
-    // let apiPath = path.join(localPath,`/${name}/src/api`)
-    // let utilsPath = path.join(localPath, `/${name}/src/utils`)
-    // fs.mkdirs(pagesPath, (err) => {
-    //   if (err) {
-    //     console.error(err);
-    //   } else {
-    //   }
-    // });
-    // fs.mkdirs(storesPath, (err) => {
-    //   if (err) {
-    //     console.error(err);
-    //   } else {
-    //   }
-    // });
-    // fs.mkdirs(apiPath, (err) => {
-    //   if (err) {
-    //     console.error(err);
-    //   } else {
-    //   }
-    // });
-    // fs.mkdirs(utilsPath, async (err) => {
-    //   if (err) {
-    //     console.error(err);
-    //   } else {
-    //     let requestPath = path.join(utilsPath, `request.js`)
-    //     let requestContent = requestTpl
-    //     await fs.writeFile(requestPath, requestContent, 'utf-8');
-    //   }
-    // });
-    // let ls2Path = path.join(localPath, `/${name}`)
-    // let command = `pnpm add axios vue-router element-plus && pnpm add less @vitejs/plugin-vue-jsx -D`
-    // exec(
-    //   command,
-    //   {
-    //     cwd: path.resolve(ls2Path),
-    //   },
-    //   function (error, stdout, stderr) {
-    //     console.log('error', error);
-    //     console.log('stdout kkkk', stdout);
-    //     console.log('stderr', stderr)
-    //   }
-    // )
+    
     res.status(200).send({
       success: true,
       data: code,

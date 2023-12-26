@@ -2,7 +2,7 @@
  * @Author: please
  * @Date: 2023-10-12 13:52:19
  * @LastEditors: please
- * @LastEditTime: 2023-10-19 10:42:45
+ * @LastEditTime: 2023-12-26 17:40:02
  * @Description: 请填写简介
  */
 const fs = require('fs-extra')
@@ -19,7 +19,6 @@ module.exports = {
       if(framework=='ruoyi-vue3') {
         utils.createRuoyiProject(res,localPath, name)
       }else if(framework == 'react') {
-        console.log(framework, 'frameworkframework')
         utils.createReactProject(res,localPath, name)
       }else if(framework == 'wechat') {
         utils.createWechatProject(res,localPath, name)
